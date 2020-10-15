@@ -1,0 +1,187 @@
+---
+title: "Stock Portfolio"
+author: "linda"
+date: "10/15/2020"
+output: 
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+```
+
+# My Portfolio
+
+I am an investor in China A-share stock market. Here is my portfolio consisting of seven stocks diversifying in industries.
+```{r}
+myStocks <- c("600519.SS", "601398.SS", "601318.SS", "601857.SS", "603288.SS", 
+              "600276.SS","600048.SS","000001.SS" ) %>% 
+  tq_get(get = "stock.prices", 
+         from = "2018-01-01",
+         to = "2020-10-14") %>%
+  group_by(symbol)
+  
+glimpse(myStocks)
+
+name <- data.frame(name = c("Moutai", "ICBC", "PingAn ", "China Petroleum", "Haitian", "Hengrui","Poly","SSE Composite Index"), 
+                   symbol = c("600519.SS", "601398.SS", "601318.SS", "601857.SS", "603288.SS", "600276.SS","600048.SS","000001.SS"))
+
+name$name <- factor(name$name, 
+                    levels = name$name,
+                    ordered = TRUE)
+
+myStocks <- myStocks %>% 
+  left_join(name)
+```
+
+# Individual Stock Performance
+
+I started my investment since 2018. Let's take a look how the seven stocks and the index performed in the past three years.
+
+```{r}
+myStocks %>% 
+  ggplot(aes(x = date, y = close)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free") +
+  labs(title = "Price Performance of my seven stocks and SSE Composite index ",
+       subtitle = "from 2018.1.1 to 2020.10.14",
+       x = "",
+       y = "price") +
+  theme_bw()
+```
+
+# Returns of the stocks
+
+```{r}
+#calculate daily returns
+myStocks_returns_daily <- myStocks %>%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "daily", 
+               type       = "log",
+               col_rename = "daily_returns",
+               cols = c(nested.col))  %>% 
+  left_join(name)
+
+#calculate monthly  returns
+myStocks_returns_monthly <- myStocks %>%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "monthly", 
+               type       = "arithmetic",
+               col_rename = "monthly_returns",
+               cols = c(nested.col)) %>% 
+  left_join(name)
+
+#calculate yearly returns
+myStocks_returns_annual <- myStocks %>%
+  group_by(symbol) %>%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "yearly", 
+               type       = "arithmetic",
+               col_rename = "yearly_returns",
+               cols = c(nested.col))%>% 
+  left_join(name)
+```
+Moutai in 2019 gave me the largest yearly return among all the stocks I hold.
+
+plot my monthly returns
+```{r}
+ggplot(myStocks_returns_monthly, aes(x=monthly_returns))+
+  geom_density()+
+  facet_wrap(~name)+
+  theme_bw()+
+  labs(x="Monthly Returns", 
+       y="Density", 
+       title = "Distribution of Monthly Returns")
+```
+
+median of my monthly returns
+```{r}
+myStocks_returns_monthly %>% 
+  group_by(name) %>% 
+  mutate(median_monthly_returns = median(monthly_returns)) %>% 
+  ggplot(aes(x = monthly_returns, y = reorder(name, median_monthly_returns),color = name)) +
+  geom_boxplot() +
+  labs(title = "boxplot of monthly median return",
+       subtitle = "from 2018.1.1 to 2020.10.14",
+       x = "monthly return",
+       y = "stocks") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  guides(color=FALSE) + 
+  theme_bw() 
+```
+
+Moutai seems to give me the largest median monthly return among the seven stocks I hold.
+
+# Risks of my portfolio
+
+Risk Return plot
+```{r}
+stocks_risk_return <- myStocks_returns_monthly %>% 
+  tq_performance(Ra = monthly_returns, Rb = NULL, performance_fun = table.Stats) %>% 
+  select(symbol,ArithmeticMean, GeometricMean, Minimum,Maximum,Stdev, Quartile1, Quartile3) %>% 
+  left_join(name)
+stocks_risk_return %>% 
+  ggplot(aes(x = Stdev, y = ArithmeticMean, color = name, label = name)) +
+  geom_point(size = 4) +
+  labs(title = "Risk-return Profile",
+       subtitle = "from 2018.1.1 to 2020.10.14",
+       x = "Risk (stdev of monthly returns)",
+       y = "Average monthly return") +
+  scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(hjust = "inward", vjust = "inward") +
+  theme_bw() +
+  theme(legend.position = "none", plot.margin = unit(c(0.2,0.2,0.2,0.2), "inches"))
+```
+Haitian has the largest risk using standard deviation as measurement. China Petroleum gave me negative returns.
+
+Stock correlation
+```{r}
+table_capm_returns <- myStocks_returns_monthly[-1] %>%
+            pivot_wider(names_from = "name",
+                        values_from = "monthly_returns")  
+
+table_capm_returns[-1] %>% 
+  GGally::ggpairs() +
+  theme_bw()+
+    theme(axis.text.x = element_text(angle = 90, size=8),
+         axis.title.x = element_blank())
+```
+Haitian has lower correltaion with other six stocks. Although the stock has high volatility, it offered good diversification effect to my portfolio.
