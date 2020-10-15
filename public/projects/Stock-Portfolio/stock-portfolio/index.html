@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Hi! I am an MFA student at London Business School. I come from Shanghai China and completed my undergrate degree at Hong Kong Univerity of Science and Technology.">
+	<meta name="author" content="Linda Wu">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>Stock Portfolio &middot; Portfolio website for Linda Wu</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Linda</strong> <span>London Business School</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Stock Portfolio</h1>
+                            </header>
+                            
+                            
+
+
+<p>```</p>
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+</div>
+<div id="my-portfolio" class="section level1">
+<h1>My Portfolio</h1>
+<p>I am an investor in China A-share stock market. Here is my portfolio consisting of seven stocks diversifying in industries.</p>
+<pre class="r"><code>myStocks &lt;- c(&quot;600519.SS&quot;, &quot;601398.SS&quot;, &quot;601318.SS&quot;, &quot;601857.SS&quot;, &quot;603288.SS&quot;, 
+              &quot;600276.SS&quot;,&quot;600048.SS&quot;,&quot;000001.SS&quot; ) %&gt;% 
+  tq_get(get = &quot;stock.prices&quot;, 
+         from = &quot;2018-01-01&quot;,
+         to = &quot;2020-10-14&quot;) %&gt;%
+  group_by(symbol)
+  
+glimpse(myStocks)</code></pre>
+<pre><code>## Rows: 4,026
+## Columns: 8
+## Groups: symbol [6]
+## $ symbol   &lt;chr&gt; &quot;601318.SS&quot;, &quot;601318.SS&quot;, &quot;601318.SS&quot;, &quot;601318.SS&quot;, &quot;601318…
+## $ date     &lt;date&gt; 2018-01-02, 2018-01-03, 2018-01-04, 2018-01-05, 2018-01-08…
+## $ open     &lt;dbl&gt; 70.2, 73.4, 71.0, 71.6, 70.8, 70.3, 71.6, 71.1, 72.7, 75.3,…
+## $ high     &lt;dbl&gt; 72.8, 73.9, 72.2, 71.9, 70.8, 72.1, 71.9, 73.1, 74.5, 78.5,…
+## $ low      &lt;dbl&gt; 70.2, 70.1, 70.6, 70.4, 69.3, 70.0, 70.7, 71.0, 72.3, 75.3,…
+## $ close    &lt;dbl&gt; 72.6, 71.0, 71.2, 70.9, 70.0, 71.9, 71.7, 72.7, 74.4, 77.7,…
+## $ volume   &lt;dbl&gt; 1.24e+08, 1.79e+08, 1.06e+08, 7.72e+07, 1.23e+08, 1.24e+08,…
+## $ adjusted &lt;dbl&gt; 68.1, 66.6, 66.8, 66.5, 65.7, 67.4, 67.3, 68.2, 69.8, 72.8,…</code></pre>
+<pre class="r"><code>name &lt;- data.frame(name = c(&quot;Moutai&quot;, &quot;ICBC&quot;, &quot;PingAn &quot;, &quot;China Petroleum&quot;, &quot;Haitian&quot;, &quot;Hengrui&quot;,&quot;Poly&quot;,&quot;SSE Composite Index&quot;), 
+                   symbol = c(&quot;600519.SS&quot;, &quot;601398.SS&quot;, &quot;601318.SS&quot;, &quot;601857.SS&quot;, &quot;603288.SS&quot;, &quot;600276.SS&quot;,&quot;600048.SS&quot;,&quot;000001.SS&quot;))
+
+name$name &lt;- factor(name$name, 
+                    levels = name$name,
+                    ordered = TRUE)
+
+myStocks &lt;- myStocks %&gt;% 
+  left_join(name)</code></pre>
+</div>
+<div id="individual-stock-performance" class="section level1">
+<h1>Individual Stock Performance</h1>
+<p>I started my investment since 2018. Let’s take a look how the seven stocks and the index performed in the past three years.</p>
+<pre class="r"><code>myStocks %&gt;% 
+  ggplot(aes(x = date, y = close)) +
+  geom_line() +
+  facet_wrap(~name, scales = &quot;free&quot;) +
+  labs(title = &quot;Price Performance of my seven stocks and SSE Composite index &quot;,
+       subtitle = &quot;from 2018.1.1 to 2020.10.14&quot;,
+       x = &quot;&quot;,
+       y = &quot;price&quot;) +
+  theme_bw()</code></pre>
+<p><img src="/projects/Stock-Portfolio/Stock-Portfolio_files/figure-html/unnamed-chunk-2-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="returns-of-the-stocks" class="section level1">
+<h1>Returns of the stocks</h1>
+<pre class="r"><code>#calculate daily returns
+myStocks_returns_daily &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;daily&quot;, 
+               type       = &quot;log&quot;,
+               col_rename = &quot;daily_returns&quot;,
+               cols = c(nested.col))  %&gt;% 
+  left_join(name)
+
+#calculate monthly  returns
+myStocks_returns_monthly &lt;- myStocks %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;monthly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;monthly_returns&quot;,
+               cols = c(nested.col)) %&gt;% 
+  left_join(name)
+
+#calculate yearly returns
+myStocks_returns_annual &lt;- myStocks %&gt;%
+  group_by(symbol) %&gt;%
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = &quot;yearly&quot;, 
+               type       = &quot;arithmetic&quot;,
+               col_rename = &quot;yearly_returns&quot;,
+               cols = c(nested.col))%&gt;% 
+  left_join(name)</code></pre>
+<p>Moutai in 2019 gave me the largest yearly return among all the stocks I hold.</p>
+<p>plot my monthly returns</p>
+<pre class="r"><code>ggplot(myStocks_returns_monthly, aes(x=monthly_returns))+
+  geom_density()+
+  facet_wrap(~name)+
+  theme_bw()+
+  labs(x=&quot;Monthly Returns&quot;, 
+       y=&quot;Density&quot;, 
+       title = &quot;Distribution of Monthly Returns&quot;)</code></pre>
+<p><img src="/projects/Stock-Portfolio/Stock-Portfolio_files/figure-html/unnamed-chunk-4-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>median of my monthly returns</p>
+<pre class="r"><code>myStocks_returns_monthly %&gt;% 
+  group_by(name) %&gt;% 
+  mutate(median_monthly_returns = median(monthly_returns)) %&gt;% 
+  ggplot(aes(x = monthly_returns, y = reorder(name, median_monthly_returns),color = name)) +
+  geom_boxplot() +
+  labs(title = &quot;boxplot of monthly median return&quot;,
+       subtitle = &quot;from 2018.1.1 to 2020.10.14&quot;,
+       x = &quot;monthly return&quot;,
+       y = &quot;stocks&quot;) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  guides(color=FALSE) + 
+  theme_bw() </code></pre>
+<p><img src="/projects/Stock-Portfolio/Stock-Portfolio_files/figure-html/unnamed-chunk-5-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Moutai seems to give me the largest median monthly return among the seven stocks I hold.</p>
+</div>
+<div id="risks-of-my-portfolio" class="section level1">
+<h1>Risks of my portfolio</h1>
+<p>Risk Return plot</p>
+<pre class="r"><code>stocks_risk_return &lt;- myStocks_returns_monthly %&gt;% 
+  tq_performance(Ra = monthly_returns, Rb = NULL, performance_fun = table.Stats) %&gt;% 
+  select(symbol,ArithmeticMean, GeometricMean, Minimum,Maximum,Stdev, Quartile1, Quartile3) %&gt;% 
+  left_join(name)
+stocks_risk_return %&gt;% 
+  ggplot(aes(x = Stdev, y = ArithmeticMean, color = name, label = name)) +
+  geom_point(size = 4) +
+  labs(title = &quot;Risk-return Profile&quot;,
+       subtitle = &quot;from 2018.1.1 to 2020.10.14&quot;,
+       x = &quot;Risk (stdev of monthly returns)&quot;,
+       y = &quot;Average monthly return&quot;) +
+  scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(hjust = &quot;inward&quot;, vjust = &quot;inward&quot;) +
+  theme_bw() +
+  theme(legend.position = &quot;none&quot;, plot.margin = unit(c(0.2,0.2,0.2,0.2), &quot;inches&quot;))</code></pre>
+<p><img src="/projects/Stock-Portfolio/Stock-Portfolio_files/figure-html/unnamed-chunk-6-1.png" width="648" style="display: block; margin: auto;" />
+Haitian has the largest risk using standard deviation as measurement. China Petroleum gave me negative returns.</p>
+<p>Stock correlation</p>
+<pre class="r"><code>table_capm_returns &lt;- myStocks_returns_monthly[-1] %&gt;%
+            pivot_wider(names_from = &quot;name&quot;,
+                        values_from = &quot;monthly_returns&quot;)  
+
+table_capm_returns[-1] %&gt;% 
+  GGally::ggpairs() +
+  theme_bw()+
+    theme(axis.text.x = element_text(angle = 90, size=8),
+         axis.title.x = element_blank())</code></pre>
+<p><img src="/projects/Stock-Portfolio/Stock-Portfolio_files/figure-html/unnamed-chunk-7-1.png" width="648" style="display: block; margin: auto;" />
+Haitian has lower correltaion with other six stocks. Although the stock has high volatility, it offered good diversification effect to my portfolio.</p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.facebook.com/profile.php?id=100013368877113&amp;ref=bookmarks" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                
+                    <li><a href="" class="icon alt " target="_blank"><span class="label"></span></a></li>
+                
+                    <li><a href="https://github.com/Xueying-Wu" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Company Name</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

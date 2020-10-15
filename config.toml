@@ -38,7 +38,7 @@ disqusShortname = ""
   # Navigation Section
   [params.navigation]
     title = "Linda"
-#    subtitle = "By HTML5 Up"
+    subtitle = "London Business School"
     menu = "Menu"
     # Optional logo as brand stored in img/
     # logo = "logo.png"
@@ -105,12 +105,12 @@ disqusShortname = ""
 
     [[params.tiles.showcase]]
       title = "Stock Portfolio"
-      subtitle = "Lorem Etiam Nullam"
+      subtitle = "My investment portfolio analysis"
       image = "pic03.jpg"
-      url = "blogs/magna"
+      url = "projects/Stock-Portfolio/Stock-Portfolio.Rmd"
 
     [[params.tiles.showcase]]
-      title = "Yiled Curves"
+      title = "Yield Curves"
       subtitle = "Nisl Sed Aliquam"
       image = "pic04.jpg"
       url = "blogs/ipsum"

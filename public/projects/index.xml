@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on Portfolio website for Linda Wu</title>
+    <link>/projects/</link>
+    <description>Recent content in Projects on Portfolio website for Linda Wu</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Stock Portfolio</title>
+      <link>/projects/stock-portfolio/stock-portfolio/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/stock-portfolio/stock-portfolio/</guid>
+      <description>```
+R Markdown  My Portfolio I am an investor in China A-share stock market. Here is my portfolio consisting of seven stocks diversifying in industries.
+myStocks &amp;lt;- c(&amp;quot;600519.SS&amp;quot;, &amp;quot;601398.SS&amp;quot;, &amp;quot;601318.SS&amp;quot;, &amp;quot;601857.SS&amp;quot;, &amp;quot;603288.SS&amp;quot;, &amp;quot;600276.SS&amp;quot;,&amp;quot;600048.SS&amp;quot;,&amp;quot;000001.SS&amp;quot; ) %&amp;gt;% tq_get(get = &amp;quot;stock.prices&amp;quot;, from = &amp;quot;2018-01-01&amp;quot;, to = &amp;quot;2020-10-14&amp;quot;) %&amp;gt;% group_by(symbol) glimpse(myStocks) ## Rows: 4,026 ## Columns: 8 ## Groups: symbol [6] ## $ symbol &amp;lt;chr&amp;gt; &amp;quot;601318.SS&amp;quot;, &amp;quot;601318.SS&amp;quot;, &amp;quot;601318.SS&amp;quot;, &amp;quot;601318.SS&amp;quot;, &amp;quot;601318… ## $ date &amp;lt;date&amp;gt; 2018-01-02, 2018-01-03, 2018-01-04, 2018-01-05, 2018-01-08… ## $ open &amp;lt;dbl&amp;gt; 70.</description>
+    </item>
+    
+  </channel>
+</rss>
