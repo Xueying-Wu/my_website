@@ -81,7 +81,7 @@ disqusShortname = ""
   [params.banner]
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
-    title = "Hi, my name is Linda Wu"
+    title = "Hi, my name is Linda Wu!"
     subtitle = "Welcome to my personal portfolio website."
     buttonText = "Get Started"
 
@@ -92,34 +92,34 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Aliquam"
-      subtitle = "Ipsum Dolor Sit Amet"
+      title = "About Me"
+      subtitle = "Glad to meet you, my friend"
       image = "pic01.jpg"
       url = "blogs/aliquam"
 
     [[params.tiles.showcase]]
-      title = "Tempus"
+      title = "IMDB Data"
       subtitle = "Feugiat Amet Tempus"
       image = "pic02.jpg"
       url = "blogs/tempus"
 
     [[params.tiles.showcase]]
-      title = "Magna"
+      title = "Stock Portfolio"
       subtitle = "Lorem Etiam Nullam"
       image = "pic03.jpg"
       url = "blogs/magna"
 
     [[params.tiles.showcase]]
-      title = "Ipsum"
+      title = "Yiled Curves"
       subtitle = "Nisl Sed Aliquam"
       image = "pic04.jpg"
       url = "blogs/ipsum"
 
-#    [[params.tiles.showcase]]
-#      title = "Consequat"
-#      subtitle = "Ipsum Dolor Sit Amet"
-#      image = "pic05.jpg"
-#      url = "blogs/ipsum"
+   [[params.tiles.showcase]]
+     title = "Project "
+     subtitle = "Ipsum Dolor Sit Amet"
+      image = "pic05.jpg"
+     url = "blogs/ipsum"
 
 #    [[params.tiles.showcase]]
 #      title = "Etiam"
@@ -190,29 +190,29 @@ disqusShortname = ""
     copyright = "Company Name"
 
     # Uses font awesome icons
-    [[params.footer.social]]
-      icon = "fa-twitter"
-      url= "https://www.twitter.com"
-      label = "Twitter"
+#    [[params.footer.social]]
+#      icon = "fa-twitter"
+#      url= "https://www.twitter.com"
+#      label = "Twitter"
 
     [[params.footer.social]]
       icon = "fa-facebook"
-      url= "https://www.facebook.com"
+      url= "https://www.facebook.com/profile.php?id=100013368877113&ref=bookmarks"
       label = "Facebook"
 
     [[params.footer.social]]
-      icon = "fa-instagram"
-      url= "https://www.instagram.com"
-      label = "Instagram"
+#      icon = "fa-instagram"
+#      url= "https://www.instagram.com"
+#      label = "Instagram"
     
     [[params.footer.social]]
       icon = "fa-github"
-      url= "https://www.github.com"
+      url= "https://github.com/Xueying-Wu"
       label = "GitHub"
 
     [[params.footer.social]]
       icon = "fa-linkedin"
-      url= "https://www.linkedin.com"
+      url= "https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile"
       label = "LinkedIn"
 
     [[params.footer.quicklinks]]
