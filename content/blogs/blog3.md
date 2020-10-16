@@ -8,7 +8,7 @@ draft: false
 image: Xueying Wu_Resume.jpg
 keywords: ""
 slug: tempus
-title: My Internships
+title: My Internship Experiences
 ---
 I was very lucky to experience various subcatogories in the financial industry, ranging from Sales and Trading, Asset Management, and Debt Capital Markets. 
 I am really looking forward to exploring the world further!

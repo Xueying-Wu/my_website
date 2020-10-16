@@ -17,7 +17,7 @@
     </item>
     
     <item>
-      <title>My Internships</title>
+      <title>My Internship Experiences</title>
       <link>/blogs/tempus/</link>
       <pubDate>Tue, 31 Oct 2017 22:26:13 -0500</pubDate>
       
@@ -76,12 +76,12 @@ myStocks &amp;lt;- c(&amp;quot;600519.SS&amp;quot;, &amp;quot;601398.SS&amp;quot
     </item>
     
     <item>
-      <title>Yield Curve</title>
+      <title>Yield Curve Inversion</title>
       <link>/blogs/yield-curve/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/blogs/yield-curve/</guid>
-      <description>Yield Curve inversion Every so often, we hear warnings from commentators on the “inverted yield curve” and its predictive power with respect to recessions. An explainer what a inverted yield curve is can be found here. If you’d rather listen to something, here is a great podcast from NPR on yield curve indicators
+      <description>What is Yield Curve inversion? Every so often, we hear warnings from commentators on the “inverted yield curve” and its predictive power with respect to recessions. An explainer what a inverted yield curve is can be found here. If you’d rather listen to something, here is a great podcast from NPR on yield curve indicators
 In addition, many articles and commentators think that, e.g., Yield curve inversion is viewed as a harbinger of recession.</description>
     </item>
     
