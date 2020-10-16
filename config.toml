@@ -111,13 +111,13 @@ disqusShortname = ""
 
     [[params.tiles.showcase]]
       title = "Yield Curve Inversion"
-      subtitle = "examine the relationship between yield curve inversion and economic resession"
+      subtitle = "Why everyone cares about yield curve?"
       image = "pic04.png"
       url = "blogs/Yield-Curve"
 
    [[params.tiles.showcase]]
      title = "IMDB Film Analysis"
-     subtitle = "What data can tell for movie lovers,"
+     subtitle = "What data can tell for movie lovers?"
       image = "pic05.jpeg"
      url = "blogs/IMDB-Film"
 
