@@ -1,0 +1,371 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Hi! I am an MFA student at London Business School. I come from Shanghai China and completed my undergrate degree at Hong Kong Univerity of Science and Technology.">
+	<meta name="author" content="Linda Wu">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>IMDB-Film &middot; Portfolio website for Linda Wu</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Linda</strong> <span>London Business School</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>IMDB-Film</h1>
+                            </header>
+                            
+                            
+
+
+<div id="analysis-of-movies--imdb-dataset" class="section level1">
+<h1>Analysis of movies- IMDB dataset</h1>
+<p>We will look at a subset sample of movies, taken from the <a href="https://www.kaggle.com/carolzhangdc/imdb-5000-movie-dataset">Kaggle IMDB 5000 movie dataset</a></p>
+<pre class="r"><code>movies &lt;- read.csv(&quot;movies.csv&quot;)
+glimpse(movies)</code></pre>
+<p>Besides the obvious variables of <code>title</code>, <code>genre</code>, <code>director</code>, <code>year</code>, and <code>duration</code>, the rest of the variables are as follows:</p>
+<ul>
+<li><code>gross</code> : The gross earnings in the US box office, not adjusted for inflation</li>
+<li><code>budget</code>: The movie’s budget</li>
+<li><code>cast_facebook_likes</code>: the number of facebook likes cast memebrs received</li>
+<li><code>votes</code>: the number of people who voted for (or rated) the movie in IMDB</li>
+<li><code>reviews</code>: the number of reviews for that movie</li>
+<li><p><code>rating</code>: IMDB average rating</p></li>
+<li><p>Produce a table with the average gross earning and budget (<code>gross</code> and <code>budget</code>) by genre. Calculate a variable <code>return_on_budget</code> which shows how many $ did a movie make at the box office for each $ of its budget. Ranked genres by this <code>return_on_budget</code> in descending order</p></li>
+</ul>
+<pre class="r"><code>movies&lt;-read.csv(&quot;movies.csv&quot;)
+movies_genre&lt;- movies %&gt;%
+  group_by(genre) %&gt;% 
+  summarize(avg_gross=mean(gross),avg_budget=mean(budget)) %&gt;% 
+  mutate(return_on_budget=avg_gross-avg_budget) %&gt;% 
+  arrange(desc(return_on_budget))
+
+movies_genre</code></pre>
+<pre><code>## # A tibble: 17 x 4
+##    genre        avg_gross avg_budget return_on_budget
+##    &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;
+##  1 Family      149160478.  14833333.       134327144.
+##  2 Musical      92084000    3189500         88894500 
+##  3 Animation    98433792.  61701429.        36732364.
+##  4 Adventure    95794257.  66290069.        29504188.
+##  5 Mystery      67533021.  39218750         28314271.
+##  6 Fantasy      42408841.  17582143.        24826698.
+##  7 Horror       37713738.  13504916.        24208821.
+##  8 Comedy       42630552.  24446319.        18184233.
+##  9 Western      20821884    3465000         17356884 
+## 10 Biography    45201805.  28543696.        16658109.
+## 11 Action       86583860.  71354888.        15228973.
+## 12 Documentary  17353973.   5887852.        11466121 
+## 13 Drama        37465371.  26242933.        11222438.
+## 14 Crime        37502397.  26596169.        10906228.
+## 15 Romance      31264848.  25107500          6157348.
+## 16 Sci-Fi       29788371.  27607143.         2181228 
+## 17 Thriller         2468     300000          -297532</code></pre>
+<ul>
+<li>Produce a table that shows the top 15 directors who have created the highest gross revenue in the box office. Don’t just show the total gross amount, but also the mean, median, and standard deviation per director.</li>
+</ul>
+<pre class="r"><code>movies_director&lt;-movies %&gt;% 
+  group_by(director) %&gt;% 
+  summarize(total=sum(gross),mean=mean(gross),median=median(gross),sd=sd(gross)) %&gt;% 
+  arrange(desc(total)) %&gt;% 
+  head(15)
+
+movies_director</code></pre>
+<pre><code>## # A tibble: 15 x 5
+##    director               total       mean     median         sd
+##    &lt;chr&gt;                  &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Steven Spielberg  4014061704 174524422. 164435221  101421051.
+##  2 Michael Bay       2231242537 171634041. 138396624  127161579.
+##  3 Tim Burton        2071275480 129454718.  76519172  108726924.
+##  4 Sam Raimi         2014600898 201460090. 234903076  162126632.
+##  5 James Cameron     1909725910 318287652. 175562880. 309171337.
+##  6 Christopher Nolan 1813227576 226653447  196667606. 187224133.
+##  7 George Lucas      1741418480 348283696  380262555  146193880.
+##  8 Robert Zemeckis   1619309108 124562239. 100853835   91300279.
+##  9 Clint Eastwood    1378321100  72543216.  46700000   75487408.
+## 10 Francis Lawrence  1358501971 271700394. 281666058  135437020.
+## 11 Ron Howard        1335988092 111332341  101587923   81933761.
+## 12 Gore Verbinski    1329600995 189942999. 123207194  154473822.
+## 13 Andrew Adamson    1137446920 284361730  279680930. 120895765.
+## 14 Shawn Levy        1129750988 102704635.  85463309   65484773.
+## 15 Ridley Scott      1128857598  80632686.  47775715   68812285.</code></pre>
+<ul>
+<li>Finally, ratings. Produce a table that describes how ratings are distributed by genre that visually shows how ratings are distributed.</li>
+</ul>
+<pre class="r"><code>movies_rating&lt;-movies %&gt;% 
+  group_by(genre) %&gt;% 
+  summarize(mean=mean(rating),min=min(rating),max=max(rating),median=median(rating),sd=sd(rating)) 
+movies_rating</code></pre>
+<pre><code>## # A tibble: 17 x 6
+##    genre        mean   min   max median     sd
+##    &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+##  1 Action       6.23   2.1   9     6.3   1.03 
+##  2 Adventure    6.51   2.3   8.6   6.6   1.09 
+##  3 Animation    6.65   4.5   8     6.9   0.968
+##  4 Biography    7.11   4.5   8.9   7.2   0.760
+##  5 Comedy       6.11   1.9   8.8   6.2   1.02 
+##  6 Crime        6.92   4.8   9.3   6.9   0.849
+##  7 Documentary  6.66   1.6   8.5   7.4   1.77 
+##  8 Drama        6.73   2.1   8.8   6.8   0.917
+##  9 Family       6.5    5.7   7.9   5.9   1.22 
+## 10 Fantasy      6.15   4.3   7.9   6.45  0.959
+## 11 Horror       5.83   3.6   8.5   5.9   1.01 
+## 12 Musical      6.75   6.3   7.2   6.75  0.636
+## 13 Mystery      6.86   4.6   8.5   6.9   0.882
+## 14 Romance      6.65   6.2   7.1   6.65  0.636
+## 15 Sci-Fi       6.66   5     8.2   6.4   1.09 
+## 16 Thriller     4.8    4.8   4.8   4.8  NA    
+## 17 Western      5.70   4.1   7.3   5.70  2.26</code></pre>
+<pre class="r"><code>p&lt;-ggplot(movies,aes(rating))+
+  geom_histogram()+
+  facet_wrap(~genre)+
+  theme_economist()+
+  labs(title=&quot;Distribution of movie ratings among different genre\n&quot;, y=&quot;Count of observations\n&quot;, x=&quot;Rating&quot;)
+p</code></pre>
+<p><img src="/blogs/IMDB-Film_files/figure-html/unnamed-chunk-3-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="examine-the-relationships" class="section level1">
+<h1>Examine the relationships</h1>
+<ul>
+<li>Examine the relationship between Revenue and Facebook likes number.</li>
+</ul>
+<pre class="r"><code>ggplot(movies, aes(y=gross, x=cast_facebook_likes))+
+  geom_point() +
+  scale_x_log10()+
+  scale_y_log10(labels = scales::dollar_format())+
+  geom_smooth(method=lm, se=FALSE) +
+  theme_economist()+
+  labs(title=&quot;Relationship between Facebook likes and gross profit in box office&quot;, x=&quot;\nFacebook likes&quot;, y=&quot;Profit in box office\n&quot; )</code></pre>
+<p><img src="/blogs/IMDB-Film_files/figure-html/gross_on_fblikes-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>The scatterplot and the regression line clearly indicates the relationship between higher cast_facebook_likes and higher gross earnings in the US box office (the regression line shows a positive incline).</p>
+<ul>
+<li>Examine the relationship between revenue and movie budget.</li>
+</ul>
+<pre class="r"><code>ggplot(movies, aes(x=gross, y=budget))+
+  geom_point()+
+  scale_x_log10(labels = scales::dollar_format())+
+  scale_y_log10(labels = scales::dollar_format())+
+  geom_smooth(method=lm, se=FALSE)+
+  labs(title=&quot;Relationship between budget and gross profit in box office&quot;, x=&quot;\nProfit in box office&quot;, y=&quot;Budget\n&quot; )+
+  theme_economist()</code></pre>
+<p><img src="/blogs/IMDB-Film_files/figure-html/gross_on_budget-1.png" width="960" style="display: block; margin: auto;" />
+Also, this scatterplot and the regression line clearly indicates the relationship between higher budget and higher gross earnings in the US box office (the regression line shows a positive incline).</p>
+<ul>
+<li>Examine the relationship between Revenue and IMDB Ratings.</li>
+</ul>
+<p>For most genres, the higher the ratings are, the more gross revenue a movie will make at the box office.</p>
+<p>In some genres there is even a negative correlation, i.e. Documentary. However, for the genres with many data points, i.e. Action, Adventure, Commedy, Crime, Drama, we can see a slightly positive correlation between the ratings and the money spend in box offices.
+However, animation, documentary, fantasy and sci-fi are exceptions.
+For family, romance, musical, thriller and western, the data is not sufficient to tell any relationships.
+The dataset is biased towards certain genres of movies, and it fail to represent the complete landscape of the movie industry.</p>
+<pre class="r"><code>ggplot(movies, aes(y=gross, x=rating))+
+  geom_point()+
+  scale_y_log10(labels = scales::dollar_format())+
+  geom_smooth(method=lm, se=FALSE)+
+  facet_wrap(~genre)+
+  labs(title = &quot;Relationship between rating and gross profit in box office\n&quot;, x=&quot;\nRating&quot;, y=&quot;Gross profit in box office\n&quot;)+
+  theme_economist()</code></pre>
+<p><img src="/blogs/IMDB-Film_files/figure-html/gross_on_rating-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="compare-steven-spielberg-and-tim-burton" class="section level1">
+<h1>Compare Steven Spielberg and Tim Burton</h1>
+<pre class="r"><code>director_rating&lt;-movies %&gt;% 
+  filter (director %in% c(&#39;Tim Burton&#39;,&#39;Steven Spielberg&#39;))%&gt;% 
+  group_by(director) %&gt;% 
+  summarise(count = n(),
+            mean_rating = mean(rating),
+            sd_rating = sd(rating),
+            t_critical_95 = qt(0.975, count-1),
+            lower_bound_95 = mean_rating - t_critical_95 * (sd_rating/(count)^0.5),
+            upper_bound_95 = mean_rating + t_critical_95 * (sd_rating/(count)^0.5)) %&gt;% 
+  select(director,mean_rating,lower_bound_95,upper_bound_95) 
+  
+  
+director_rating</code></pre>
+<pre><code>## # A tibble: 2 x 4
+##   director         mean_rating lower_bound_95 upper_bound_95
+##   &lt;chr&gt;                  &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
+## 1 Steven Spielberg        7.57           7.27           7.87
+## 2 Tim Burton              6.93           6.53           7.33</code></pre>
+<pre class="r"><code>ggplot(director_rating, aes(x = mean_rating, y = reorder(director,mean_rating))) +
+  geom_point(aes(size = 4, color=director))+
+  geom_errorbar(aes(xmax = upper_bound_95, xmin = lower_bound_95,x=mean_rating,color=director,xlab=),width=0.05,size=1.5)+
+  theme_bw()+
+  theme(legend.position=&#39;none&#39;)+
+  geom_rect(ymin = 0, ymax = 4, xmin = director_rating$lower_bound_95[1], xmax = director_rating$upper_bound_95[2], alpha = 0.2)+
+   geom_text(aes(label=round(mean_rating,2)), nudge_y = 0.1, size = 6) +
+  geom_text(aes(label=round(lower_bound_95,2), x=lower_bound_95),nudge_y = 0.1)+
+  geom_text(aes(label=round(upper_bound_95,2), x=upper_bound_95),nudge_y = 0.1)+
+  labs(title=&#39;Do Spielberg and Burton have the same mean IMDB ratings?&#39;,
+       subtitle=&#39;95% confidence intervals overlap&#39;,
+       y=&#39;&#39;,
+       x=&#39;Mean IMDB ratings&#39;)+
+    theme(plot.title=element_text(size=15))</code></pre>
+<p><img src="/blogs/IMDB-Film_files/figure-html/plot_director_rating-1.png" width="648" style="display: block; margin: auto;" />
+Because the confidence intervalls are overlapping (grey bar), we have to do a test to see whether the difference in means is statistically significant or not.</p>
+<p>H0: The difference in the mean IMDB ratings for Steven Spielberg and Tim Burton is equal to zero</p>
+<p>H1: The difference in the mean IMDB ratings for Steven Spielberg and Tim Burton is not equal to zero</p>
+<p>t = 2.7144, p-value = 0.01078</p>
+<pre class="r"><code>#hypothesis testing with infer package
+library(infer)
+director_test&lt;-movies %&gt;% 
+  filter (director %in% c(&#39;Steven Spielberg&#39;,&#39;Tim Burton&#39;))
+
+t.test(rating~director, data=director_test)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  rating by director
+## t = 3, df = 31, p-value = 0.01
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.16 1.13
+## sample estimates:
+## mean in group Steven Spielberg       mean in group Tim Burton 
+##                           7.57                           6.93</code></pre>
+<pre class="r"><code>mean_diff&lt;-  
+  director_test%&gt;%
+  specify(rating~director)%&gt;%
+    calculate(stat=&quot;diff in means&quot;, order= c(&quot;Steven Spielberg&quot;, &quot;Tim Burton&quot;))
+  
+  mean_diff</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##    stat
+##   &lt;dbl&gt;
+## 1 0.643</code></pre>
+<pre class="r"><code>  set.seed(1234)
+  
+  diff_in_means&lt;-director_test%&gt;%
+  specify(rating~director)%&gt;%
+  hypothesise(null=&#39;independence&#39;) %&gt;% 
+  generate(reps=1000,type=&#39;permute&#39;) %&gt;% 
+  calculate(stat=&quot;diff in means&quot;, order= c(&quot;Steven Spielberg&quot;, &quot;Tim Burton&quot;))
+
+
+  diff_in_means %&gt;%  visualize()+
+    shade_p_value(obs_stat = 0.643, direction = &quot;both&quot;)</code></pre>
+<p><img src="/blogs/IMDB-Film_files/figure-html/director_testing-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>  diff_in_means %&gt;%
+    get_p_value(obs_stat=0.643, direction=&quot;both&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1   0.008</code></pre>
+<p>Because of the p-value and the graph above we can reject our null hypothesis that the difference in means is 0 and therefore, we can say that the the means differ given a confidence intervall of 95%.</p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.facebook.com/profile.php?id=100013368877113&amp;ref=bookmarks" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                
+                    <li><a href="" class="icon alt " target="_blank"><span class="label"></span></a></li>
+                
+                    <li><a href="https://github.com/Xueying-Wu" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Company Name</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

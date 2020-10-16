@@ -119,7 +119,7 @@ disqusShortname = ""
      title = "IMDB Film Analysis"
      subtitle = "What data can tell for movie lovers,"
       image = "pic05.jpeg"
-     url = "blogs/ipsum"
+     url = "blogs/IMDB-Film"
 
     [[params.tiles.showcase]]
       title = "Etiam"

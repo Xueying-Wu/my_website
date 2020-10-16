@@ -1,0 +1,211 @@
+---
+title: "IMDB-Film"
+author: "linda"
+date: "10/16/2020"
+output: html_document
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+```
+# Analysis of movies- IMDB dataset
+
+We will look at a subset sample of movies, taken from the [Kaggle IMDB 5000 movie dataset](https://www.kaggle.com/carolzhangdc/imdb-5000-movie-dataset)
+
+  
+```{r,load_movies, warning=FALSE, message=FALSE, eval=FALSE}
+
+movies <- read.csv("movies.csv")
+glimpse(movies)
+
+```
+
+Besides the obvious variables of `title`, `genre`, `director`, `year`, and `duration`, the rest of the variables are as follows:
+
+- `gross` : The gross earnings in the US box office, not adjusted for inflation
+- `budget`: The movie's budget 
+- `cast_facebook_likes`: the number of facebook likes cast memebrs received
+- `votes`: the number of people who voted for (or rated) the movie in IMDB 
+- `reviews`: the number of reviews for that movie
+- `rating`: IMDB average rating 
+
+- Produce a table with the average gross earning and budget (`gross` and `budget`) by genre. Calculate a variable `return_on_budget` which shows how many $ did a movie make at the box office for each $ of its budget. Ranked genres by this `return_on_budget` in descending order
+```{r}
+movies<-read.csv("movies.csv")
+movies_genre<- movies %>%
+  group_by(genre) %>% 
+  summarize(avg_gross=mean(gross),avg_budget=mean(budget)) %>% 
+  mutate(return_on_budget=avg_gross-avg_budget) %>% 
+  arrange(desc(return_on_budget))
+
+movies_genre
+```
+- Produce a table that shows the top 15 directors who have created the highest gross revenue in the box office. Don't just show the total gross amount, but also the mean, median, and standard deviation per director.
+```{r}
+movies_director<-movies %>% 
+  group_by(director) %>% 
+  summarize(total=sum(gross),mean=mean(gross),median=median(gross),sd=sd(gross)) %>% 
+  arrange(desc(total)) %>% 
+  head(15)
+
+movies_director
+```
+- Finally, ratings. Produce a table that describes how ratings are distributed by genre that visually shows how ratings are distributed. 
+```{r}
+movies_rating<-movies %>% 
+  group_by(genre) %>% 
+  summarize(mean=mean(rating),min=min(rating),max=max(rating),median=median(rating),sd=sd(rating)) 
+movies_rating
+
+p<-ggplot(movies,aes(rating))+
+  geom_histogram()+
+  facet_wrap(~genre)+
+  theme_economist()+
+  labs(title="Distribution of movie ratings among different genre\n", y="Count of observations\n", x="Rating")
+p
+```
+
+# Examine the relationships 
+  - Examine the relationship between Revenue and Facebook likes number. 
+
+```{r, gross_on_fblikes, fig.width=10}
+ggplot(movies, aes(y=gross, x=cast_facebook_likes))+
+  geom_point() +
+  scale_x_log10()+
+  scale_y_log10(labels = scales::dollar_format())+
+  geom_smooth(method=lm, se=FALSE) +
+  theme_economist()+
+  labs(title="Relationship between Facebook likes and gross profit in box office", x="\nFacebook likes", y="Profit in box office\n" )
+```
+
+The scatterplot and the regression line clearly indicates the relationship between higher cast_facebook_likes and higher gross earnings in the US box office (the regression line shows a positive incline).
+
+  - Examine the relationship between revenue and movie budget.
+
+```{r, gross_on_budget, fig.width=10}
+ggplot(movies, aes(x=gross, y=budget))+
+  geom_point()+
+  scale_x_log10(labels = scales::dollar_format())+
+  scale_y_log10(labels = scales::dollar_format())+
+  geom_smooth(method=lm, se=FALSE)+
+  labs(title="Relationship between budget and gross profit in box office", x="\nProfit in box office", y="Budget\n" )+
+  theme_economist()
+```
+Also, this scatterplot and the regression line clearly indicates the relationship between higher budget and higher gross earnings in the US box office (the regression line shows a positive incline).
+ 
+  - Examine the relationship between Revenue and IMDB Ratings. 
+
+For most genres, the higher the ratings are, the more gross revenue a movie will make at the box office.
+
+In some genres there is even a negative correlation, i.e. Documentary. However, for the genres with many data points, i.e. Action, Adventure, Commedy, Crime, Drama, we can see a slightly positive correlation between the ratings and the money spend in box offices.
+However, animation, documentary, fantasy and sci-fi are exceptions.
+For family, romance, musical, thriller and western, the data is not sufficient to tell any relationships.
+The dataset is biased towards certain genres of movies, and it fail to represent the complete landscape of the movie industry.
+
+```{r, gross_on_rating, fig.width=10}
+ggplot(movies, aes(y=gross, x=rating))+
+  geom_point()+
+  scale_y_log10(labels = scales::dollar_format())+
+  geom_smooth(method=lm, se=FALSE)+
+  facet_wrap(~genre)+
+  labs(title = "Relationship between rating and gross profit in box office\n", x="\nRating", y="Gross profit in box office\n")+
+  theme_economist()
+```
+
+# Compare Steven Spielberg and Tim Burton
+
+```{r director_rating}
+director_rating<-movies %>% 
+  filter (director %in% c('Tim Burton','Steven Spielberg'))%>% 
+  group_by(director) %>% 
+  summarise(count = n(),
+            mean_rating = mean(rating),
+            sd_rating = sd(rating),
+            t_critical_95 = qt(0.975, count-1),
+            lower_bound_95 = mean_rating - t_critical_95 * (sd_rating/(count)^0.5),
+            upper_bound_95 = mean_rating + t_critical_95 * (sd_rating/(count)^0.5)) %>% 
+  select(director,mean_rating,lower_bound_95,upper_bound_95) 
+  
+  
+director_rating
+```
+```{r plot_director_rating}
+ggplot(director_rating, aes(x = mean_rating, y = reorder(director,mean_rating))) +
+  geom_point(aes(size = 4, color=director))+
+  geom_errorbar(aes(xmax = upper_bound_95, xmin = lower_bound_95,x=mean_rating,color=director,xlab=),width=0.05,size=1.5)+
+  theme_bw()+
+  theme(legend.position='none')+
+  geom_rect(ymin = 0, ymax = 4, xmin = director_rating$lower_bound_95[1], xmax = director_rating$upper_bound_95[2], alpha = 0.2)+
+   geom_text(aes(label=round(mean_rating,2)), nudge_y = 0.1, size = 6) +
+  geom_text(aes(label=round(lower_bound_95,2), x=lower_bound_95),nudge_y = 0.1)+
+  geom_text(aes(label=round(upper_bound_95,2), x=upper_bound_95),nudge_y = 0.1)+
+  labs(title='Do Spielberg and Burton have the same mean IMDB ratings?',
+       subtitle='95% confidence intervals overlap',
+       y='',
+       x='Mean IMDB ratings')+
+    theme(plot.title=element_text(size=15))
+```
+Because the confidence intervalls are overlapping (grey bar), we have to do a test to see whether the difference in means is statistically significant or not.
+
+H0: The difference in the mean IMDB ratings for Steven Spielberg and Tim Burton is equal to zero
+
+H1: The difference in the mean IMDB ratings for Steven Spielberg and Tim Burton is not equal to zero
+
+t = 2.7144, p-value = 0.01078
+
+```{r director_testing}
+#hypothesis testing with infer package
+library(infer)
+director_test<-movies %>% 
+  filter (director %in% c('Steven Spielberg','Tim Burton'))
+
+t.test(rating~director, data=director_test)
+
+mean_diff<-  
+  director_test%>%
+  specify(rating~director)%>%
+    calculate(stat="diff in means", order= c("Steven Spielberg", "Tim Burton"))
+  
+  mean_diff
+  
+  set.seed(1234)
+  
+  diff_in_means<-director_test%>%
+  specify(rating~director)%>%
+  hypothesise(null='independence') %>% 
+  generate(reps=1000,type='permute') %>% 
+  calculate(stat="diff in means", order= c("Steven Spielberg", "Tim Burton"))
+
+
+  diff_in_means %>%  visualize()+
+    shade_p_value(obs_stat = 0.643, direction = "both")
+  
+  diff_in_means %>%
+    get_p_value(obs_stat=0.643, direction="both")
+```
+Because of the p-value and the graph above we can reject our null hypothesis that the difference in means is 0 and therefore, we can say that the the means differ given a confidence intervall of 95%.
