@@ -2,14 +2,8 @@
 title: "Stock Portfolio"
 author: "linda"
 date: "10/15/2020"
-output: 
-  html_document:
-    theme: flatly
-    highlight: zenburn
-    number_sections: yes
-    toc: yes
-    toc_float: yes
-    code_folding: show
+output: html_document
+
 ---
 
 ```{r setup, include=FALSE}
