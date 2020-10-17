@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Hi! I am an MFA student at London Business School. I come from Shanghai China and completed my undergrate degree at Hong Kong Univerity of Science and Technology.">
+	<meta name="author" content="Linda Wu">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>Eurozone House Price &middot; Portfolio website for Linda Wu</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Linda</strong> <span>London Business School</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Eurozone House Price</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/blogs/pic06.jpeg" alt="" /></span>
+                            
+                            
+
+
+<div id="house-price-in-eurozone" class="section level2">
+<h2>House Price in Eurozone</h2>
+<p>Get Houseprice Index Data from Eurostat package</p>
+<pre class="r"><code>library(eurostat)
+library(tidyverse)</code></pre>
+<pre><code>## ─ Attaching packages ──────────────────────────── tidyverse 1.3.0 ─</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
+## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ─ Conflicts ────────────────────────────── tidyverse_conflicts() ─
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(fpp2) # for time series decomposition</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
+##   method            from
+##   as.zoo.data.frame zoo</code></pre>
+<pre><code>## ─ Attaching packages ──────────────────────────────── fpp2 2.4 ─</code></pre>
+<pre><code>## ✓ forecast  8.13     ✓ expsmooth 2.3 
+## ✓ fma       2.4</code></pre>
+<pre><code>## </code></pre>
+<pre class="r"><code>library(seasonal)</code></pre>
+<pre><code>## 
+## 载入程辑包：&#39;seasonal&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:tibble&#39;:
+## 
+##     view</code></pre>
+<pre class="r"><code>library(ggthemes)
+library(tmap) #mapping eurostat data
+library(infer)</code></pre>
+<pre class="r"><code>hpi &lt;- get_eurostat(id=&quot;teicp270&quot;)</code></pre>
+<pre><code>## Table teicp270 cached at /var/folders/3b/8w2gz8ks0kb9n6jrygsdb7n00000gn/T//RtmpsJ6Qdo/eurostat/teicp270_date_code_FF.rds</code></pre>
+<pre class="r"><code>glimpse(hpi)</code></pre>
+<pre><code>## Rows: 1,254
+## Columns: 5
+## $ indic  &lt;chr&gt; &quot;TOTAL&quot;, &quot;TOTAL&quot;, &quot;TOTAL&quot;, &quot;TOTAL&quot;, &quot;TOTAL&quot;, &quot;TOTAL&quot;, &quot;TOTAL&quot;…
+## $ unit   &lt;chr&gt; &quot;I15_NSA&quot;, &quot;I15_NSA&quot;, &quot;I15_NSA&quot;, &quot;I15_NSA&quot;, &quot;I15_NSA&quot;, &quot;I15_N…
+## $ geo    &lt;chr&gt; &quot;AT&quot;, &quot;BE&quot;, &quot;BG&quot;, &quot;CY&quot;, &quot;CZ&quot;, &quot;DE&quot;, &quot;DK&quot;, &quot;EA&quot;, &quot;EA19&quot;, &quot;EE&quot;,…
+## $ time   &lt;date&gt; 2017-07-01, 2017-07-01, 2017-07-01, 2017-07-01, 2017-07-01, …
+## $ values &lt;dbl&gt; 114.75, 108.18, 117.62, 102.46, 121.20, 115.00, 111.98, 109.5…</code></pre>
+</div>
+<div id="plot-housing-price-index" class="section level1">
+<h1>Plot Housing Price Index</h1>
+<p>Let us focus on four major nations in the Eurozone.
+Plot House Price Index in four countries: UK, France, Germany, Italy vs EU28</p>
+<pre class="r"><code>hpi_data &lt;- hpi %&gt;% 
+  
+  # choose the UK, France, Germany, Italy, and the EU28
+  filter(geo %in%  c(&quot;UK&quot;, &quot;FR&quot;, &quot;DE&quot;, &quot;IT&quot;,&quot;EU28&quot;) ) %&gt;%  
+  
+  # choose value of the index (unit =   `I15_NSA`) 
+    filter(unit == &quot;I15_NSA&quot;)
+
+ggplot(hpi_data, aes(x=time, y=values, group=geo, colour=geo))+
+  geom_point()+
+  geom_line()+
+  theme_economist()+
+  labs(
+    title= &quot;House price index in UK, France, Germany and Italy Since 2017&quot;,
+    subtitle=&quot;Housing price index in 2015=100&quot;,
+    x = &quot;Time&quot;,
+    y = &quot;Housing Price Index&quot;, 
+    caption = &quot;Source: Eurostat&quot;
+  )</code></pre>
+<p><img src="/blogs/EU-HPI_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+We can see the highest House Price Index in Germany, followed by United Kingdom. Italian housing market seemed to be in recession, as its housing price index were below 2015 level until 2020.</p>
+<p>Let us compare the percentage change.</p>
+<pre class="r"><code>hpi_quarter_change_data &lt;- hpi %&gt;% 
+  
+  # choose the UK, France, Germany, Italy, and the EU28
+  filter(geo %in%  c(&quot;UK&quot;, &quot;FR&quot;, &quot;DE&quot;, &quot;IT&quot;,&quot;EU28&quot;) ) %&gt;%  
+  
+  # choose value of the index (unit = `I15_NSA`) 
+    filter(unit ==&quot;PCH_Q1_NSA&quot;)
+hpi_year_change_data &lt;- hpi %&gt;% 
+  
+  # choose the UK, France, Germany, Italy, and the EU28
+  filter(geo %in%  c(&quot;UK&quot;, &quot;FR&quot;, &quot;DE&quot;, &quot;IT&quot;,&quot;EU28&quot;) ) %&gt;%  
+  
+  # choose value of the index (unit = `I15_NSA`) 
+    filter(unit ==&quot;PCH_Q4_NSA&quot;)
+ggplot(hpi_quarter_change_data, aes(x=time, y=values, group=geo, colour=geo))+
+  geom_point()+
+  geom_line()+
+  theme_economist()+
+  labs(
+    title= &quot;Quarterly Percentage Change in House price index in UK, France, Germany and Italy&quot;,
+    x = &quot;Time&quot;,
+    y = &quot;Percentage Change&quot;, 
+    caption = &quot;Source: Eurostat&quot;
+  )</code></pre>
+<p><img src="/blogs/EU-HPI_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(hpi_year_change_data, aes(x=time, y=values, group=geo, colour=geo))+
+  geom_point()+
+  geom_line()+
+  theme_economist()+
+  labs(
+    title= &quot;Yearly Percentage Change in House price index in UK, France, Germany and Italy&quot;,
+    x = &quot;Time&quot;,
+    y = &quot;Percentage Change&quot;, 
+    caption = &quot;Source: Eurostat&quot;
+  )</code></pre>
+<p><img src="/blogs/EU-HPI_files/figure-html/unnamed-chunk-4-2.png" width="672" />
+Overall, house price changes fluctuate a lot quarter to quarter. There exists a general pattern that house price perchange of changes start to pick up in the first half year, and drop since the third quarter.
+Comparing across countries, we can see Germany experiences the highest house price increase among the four since 2017. While in UK, the house price increasing speed gradually slowed down. Now, it ranked the bottom among the four countries.</p>
+</div>
+<div id="hypothesis-test-on-uk-and-france" class="section level1">
+<h1>Hypothesis Test on UK and France</h1>
+<p>Let us compare the house price percentage increase in UK and in France.</p>
+<p>H0: The yearly percentage house price change in UK is the same as in France.
+H1: The yearly percentage house price change in UK is the same as in France.</p>
+<pre class="r"><code>UKvsFrance &lt;- hpi %&gt;% 
+  filter(geo %in% c(&quot;UK&quot;,&quot;FR&quot;)) %&gt;%  
+  filter(unit == &quot;PCH_Q4_NSA&quot;) %&gt;% 
+  select (geo, time, values) 
+
+t.test(values~geo, data=UKvsFrance)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  values by geo
+## t = 1.955, df = 17.236, p-value = 0.067
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.07678753  2.04345420
+## sample estimates:
+## mean in group FR mean in group UK 
+##         3.500000         2.516667</code></pre>
+<pre class="r"><code>mean_diff&lt;-  
+  UKvsFrance%&gt;%
+  specify(values~geo)%&gt;%
+    calculate(stat=&quot;diff in means&quot;, order= c(&quot;FR&quot;, &quot;UK&quot;))
+  mean_diff</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##    stat
+##   &lt;dbl&gt;
+## 1 0.983</code></pre>
+<pre class="r"><code>  set.seed(1234)
+  diff_in_means&lt;-UKvsFrance%&gt;%
+  specify(values~geo)%&gt;%
+  hypothesise(null=&#39;independence&#39;) %&gt;% 
+  generate(reps=1000,type=&#39;permute&#39;) %&gt;% 
+  calculate(stat=&quot;diff in means&quot;, order= c(&quot;FR&quot;, &quot;UK&quot;))
+
+
+  diff_in_means %&gt;%  visualize()+
+    shade_p_value(obs_stat = 0.9833, direction = &quot;both&quot;)</code></pre>
+<p><img src="/blogs/EU-HPI_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>  diff_in_means %&gt;%
+    get_p_value(obs_stat=0.9833, direction=&quot;both&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1   0.062</code></pre>
+<p>```
+According to t-test,t-value is smaller than 2 and p-value is larger than 5%.
+This is also similar using the infer package.
+So we can not reject the null hypothesis.
+My conclusion is that Housing Price Index yearly increases in UK are not different from in France.</p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.facebook.com/profile.php?id=100013368877113&amp;ref=bookmarks" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                
+                    <li><a href="" class="icon alt " target="_blank"><span class="label"></span></a></li>
+                
+                    <li><a href="https://github.com/Xueying-Wu" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Company Name</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

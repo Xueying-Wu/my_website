@@ -1,0 +1,132 @@
+---
+title: "Eurozone House Price"
+author: "linda"
+date: "2020/10/17"
+output: html_document
+image: pic06.jpeg
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## House Price in Eurozone
+Get Houseprice Index Data from Eurostat package
+```{r }
+library(eurostat)
+library(tidyverse)
+library(fpp2) # for time series decomposition
+library(seasonal)
+library(ggthemes)
+library(tmap) #mapping eurostat data
+library(infer)
+```
+```{r }
+hpi <- get_eurostat(id="teicp270")
+glimpse(hpi)
+```
+
+# Plot Housing Price Index
+Let us focus on four major nations in the Eurozone.
+Plot House Price Index in four countries: UK, France, Germany, Italy vs EU28
+```{r }
+hpi_data <- hpi %>% 
+  
+  # choose the UK, France, Germany, Italy, and the EU28
+  filter(geo %in%  c("UK", "FR", "DE", "IT","EU28") ) %>%  
+  
+  # choose value of the index (unit =   `I15_NSA`) 
+    filter(unit == "I15_NSA")
+
+ggplot(hpi_data, aes(x=time, y=values, group=geo, colour=geo))+
+  geom_point()+
+  geom_line()+
+  theme_economist()+
+  labs(
+    title= "House price index in UK, France, Germany and Italy Since 2017",
+    subtitle="Housing price index in 2015=100",
+    x = "Time",
+    y = "Housing Price Index", 
+    caption = "Source: Eurostat"
+  )
+```
+We can see the highest House Price Index in Germany, followed by United Kingdom. Italian housing market seemed to be in recession, as its housing price index were below 2015 level until 2020.
+
+Let us compare the percentage change.
+```{r }
+hpi_quarter_change_data <- hpi %>% 
+  
+  # choose the UK, France, Germany, Italy, and the EU28
+  filter(geo %in%  c("UK", "FR", "DE", "IT","EU28") ) %>%  
+  
+  # choose value of the index (unit = `I15_NSA`) 
+    filter(unit =="PCH_Q1_NSA")
+hpi_year_change_data <- hpi %>% 
+  
+  # choose the UK, France, Germany, Italy, and the EU28
+  filter(geo %in%  c("UK", "FR", "DE", "IT","EU28") ) %>%  
+  
+  # choose value of the index (unit = `I15_NSA`) 
+    filter(unit =="PCH_Q4_NSA")
+ggplot(hpi_quarter_change_data, aes(x=time, y=values, group=geo, colour=geo))+
+  geom_point()+
+  geom_line()+
+  theme_economist()+
+  labs(
+    title= "Quarterly Percentage Change in House price index in UK, France, Germany and Italy",
+    x = "Time",
+    y = "Percentage Change", 
+    caption = "Source: Eurostat"
+  )
+ggplot(hpi_year_change_data, aes(x=time, y=values, group=geo, colour=geo))+
+  geom_point()+
+  geom_line()+
+  theme_economist()+
+  labs(
+    title= "Yearly Percentage Change in House price index in UK, France, Germany and Italy",
+    x = "Time",
+    y = "Percentage Change", 
+    caption = "Source: Eurostat"
+  )
+```
+Overall, house price changes fluctuate a lot quarter to quarter. There exists a general pattern that house price perchange of changes start to pick up in the first half year, and drop since the third quarter.
+Comparing across countries, we can see Germany experiences the highest house price increase among the four since 2017. While in UK, the house price increasing speed gradually slowed down. Now, it ranked the bottom among the four countries.
+
+# Hypothesis Test on UK and France
+Let us compare the house price percentage increase in UK and in France.
+
+H0: The yearly percentage house price change in UK is the same as in France.
+H1: The yearly percentage house price change in UK is the same as in France.
+```{r }
+UKvsFrance <- hpi %>% 
+  filter(geo %in% c("UK","FR")) %>%  
+  filter(unit == "PCH_Q4_NSA") %>% 
+  select (geo, time, values) 
+
+t.test(values~geo, data=UKvsFrance)
+
+mean_diff<-  
+  UKvsFrance%>%
+  specify(values~geo)%>%
+    calculate(stat="diff in means", order= c("FR", "UK"))
+  mean_diff
+  
+  set.seed(1234)
+  diff_in_means<-UKvsFrance%>%
+  specify(values~geo)%>%
+  hypothesise(null='independence') %>% 
+  generate(reps=1000,type='permute') %>% 
+  calculate(stat="diff in means", order= c("FR", "UK"))
+
+
+  diff_in_means %>%  visualize()+
+    shade_p_value(obs_stat = 0.9833, direction = "both")
+  
+  diff_in_means %>%
+    get_p_value(obs_stat=0.9833, direction="both")
+```
+```
+According to t-test,t-value is smaller than 2 and p-value is larger than 5%.
+This is also similar using the infer package.
+So we can not reject the null hypothesis.
+My conclusion is that Housing Price Index yearly increases in UK are not different from in France.
