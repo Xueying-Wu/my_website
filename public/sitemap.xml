@@ -81,7 +81,11 @@
   </url>
   
   <url>
-    <loc>/blogs/stock-portfolio/</loc>
+    <loc>/blogs/stock-portfolio.knit/</loc>
+  </url>
+  
+  <url>
+    <loc>/blogs/stock-portfolio.utf8/</loc>
   </url>
   
   <url>
