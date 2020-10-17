@@ -3,7 +3,7 @@ title: "Eurozone House Price"
 author: "linda"
 date: "2020/10/17"
 output: html_document
-image: pic06.jpeg
+
 ---
 
 ```{r setup, include=FALSE}

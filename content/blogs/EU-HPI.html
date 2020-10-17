@@ -374,19 +374,19 @@ summary {
 <p>Get Houseprice Index Data from Eurostat package</p>
 <pre class="r"><code>library(eurostat)
 library(tidyverse)</code></pre>
-<pre><code>## ─ Attaching packages ───────────────────────── tidyverse 1.3.0 ─</code></pre>
+<pre><code>## ─ Attaching packages ──────────────────────────── tidyverse 1.3.0 ─</code></pre>
 <pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
 ## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
 ## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
 ## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>## ─ Conflicts ────────────────────────── tidyverse_conflicts() ─
+<pre><code>## ─ Conflicts ────────────────────────────── tidyverse_conflicts() ─
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(fpp2) # for time series decomposition</code></pre>
 <pre><code>## Registered S3 method overwritten by 'quantmod':
 ##   method            from
 ##   as.zoo.data.frame zoo</code></pre>
-<pre><code>## ─ Attaching packages ──────────────────────────── fpp2 2.4 ─</code></pre>
+<pre><code>## ─ Attaching packages ──────────────────────────────── fpp2 2.4 ─</code></pre>
 <pre><code>## ✓ forecast  8.13     ✓ expsmooth 2.3 
 ## ✓ fma       2.4</code></pre>
 <pre><code>## </code></pre>
@@ -400,7 +400,7 @@ library(tidyverse)</code></pre>
 library(tmap) #mapping eurostat data
 library(infer)</code></pre>
 <pre class="r"><code>hpi &lt;- get_eurostat(id=&quot;teicp270&quot;)</code></pre>
-<pre><code>## Table teicp270 cached at /var/folders/3b/8w2gz8ks0kb9n6jrygsdb7n00000gn/T//Rtmpy8CZHK/eurostat/teicp270_date_code_FF.rds</code></pre>
+<pre><code>## Table teicp270 cached at /var/folders/3b/8w2gz8ks0kb9n6jrygsdb7n00000gn/T//RtmpwpyYG9/eurostat/teicp270_date_code_FF.rds</code></pre>
 <pre class="r"><code>glimpse(hpi)</code></pre>
 <pre><code>## Rows: 1,254
 ## Columns: 5
