@@ -10,5 +10,5 @@ keywords: ""
 slug: aliquam
 title: About Me
 ---
-Hello! My name is Linda Wu! I am currently a Masters in Financial Analysis at London Business School. Previously, I studied at HKUST, majoring in Economics and Finance, minor in Mathematics.I take great interest in the financial industry.
+Hello! My name is Linda Wu! I am currently a Masters in Financial Analysis at London Business School. Previously, I studied at HKUST, majoring in Economics and Finance, minor in Mathematics. I take a great interest in the financial industry.
 
