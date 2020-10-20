@@ -168,7 +168,7 @@ disqusShortname = ""
     # by copying the corresponding map with frontmatter code.
     [[params.contact.email]]
     title = "Email"
-    email = "lwu.mfa2021@mfa.com"
+    email = "lwu.mfa2021@london.com"
 
     [[params.contact.phone]]
     title = "Phone"
